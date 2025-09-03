@@ -1,0 +1,101 @@
+---
+title: "Netflix Web Series Analysis Report"
+author: "Group-21"
+date: "`r Sys.Date()`"
+output: html_document
+knitr: 
+  opts_chunk: 
+    warning: FALSE
+    message: FALSE
+---
+
+# Introduction
+
+This report details the analysis of a dataset focusing on popular Netflix web series with ratings from Rotten Tomatoes. The analysis is based on a Shiny web app designed to explore various aspects of the data, including user ratings, critical scores, and genre distributions.
+
+# a. Data Description
+
+The dataset used for this project includes 10 popular Netflix series and contains the following columns:
+
+-   **Title**: The name of the series.
+-   **Genre**: The primary genre of the series (e.g., Drama, Crime, Sci-Fi).
+-   **Tomatometer**: The percentage score from critics.
+-   **Popcornmeter**: The percentage score from the audience.
+-   **Seasons**: The number of seasons for each series.
+
+**Dataset Size**: 10 observations, each representing a unique series.
+
+# b. Obtaining the Data
+
+The dataset was initially created as a demo with sample data hard-coded into the R code. The real application might involve data obtained through web scraping using `rvest` for ratings and other series details, or CSV imports for pre-collected data.
+
+**Example data collection steps**: -
+
+-   **Web scraping**: Used `rvest` to scrape show details and ratings from Rotten Tomatoes.
+
+-   **CSV import**: Loaded locally stored data via `read.csv()`.
+
+# c. Identifying Biases in the Data
+
+Potential biases in the dataset include:
+
+-   **Selection Bias**: The dataset represents only a select few popular series, omitting a comprehensive view of Netflix content.
+
+-   **Recency Bias**: Series that recently gained popularity may be overrepresented.
+
+-   **Rating Inconsistencies**: Audience and critic scores might not be fully representative due to limited samples or highly polarized reviews.
+
+# d. Interesting Questions to Ask
+
+-   Which genres have the highest critical acclaim (Tomatometer scores)?
+-   Is there a correlation between Tomatometer and Popcornmeter scores?
+-   Do series with more seasons tend to have higher audience engagement?
+-   Which genre has the most consistent scoring patterns?
+-   What is the distribution of ratings across different genres?
+
+# e. Important Visualizations
+
+### 1. Genre Distribution
+
+```{r, echo=FALSE, include=TRUE}
+# Create the data frame 
+# set Working Directory.
+data <- read.csv("data.csv") 
+data$Tomatometer <- as.numeric(data$Tomatometer)
+data$Popcornmeter <- as.numeric(data$Popcornmeter) 
+data$Seasons <- as.numeric(data$Seasons)
+```
+
+# Plot 1: Genre distribution
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot(data, aes(x = Genre, fill = Genre)) +
+  geom_bar(color = "black") + 
+  scale_fill_brewer(palette = "Set3") +
+  labs(title = "Detailed Genre Distribution", x = "Genre", y = "Count") +  
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Plot 2: Tomatometer vs Audience Score
+
+```{r, echo=FALSE}
+library(ggplot2) 
+ggplot(data, aes(x = Tomatometer, y = Popcornmeter, color = Genre)) +  
+  geom_point(size = 4, alpha = 0.8) +  
+  scale_color_brewer(palette = "Dark2") + 
+  labs(title = "Tomatometer vs Audience Score", x = "Tomatometer Score (%)",y = "Audience Score (%)") + 
+  theme_minimal(base_size = 16)
+```
+
+# Plot 3: Density plot
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot(data, aes(x = Tomatometer, fill = Genre)) + 
+  geom_density(alpha = 0.6) + 
+  scale_fill_brewer(palette = "Set3") +  
+  labs(title = "Density of Tomatometer Scores by Genre", x = "Tomatometer Score (%)",y = "Density") +
+  theme_minimal(base_size = 16)
+```
